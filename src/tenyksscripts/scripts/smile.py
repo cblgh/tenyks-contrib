@@ -1,11 +1,8 @@
 import random
 
-smiles = [':^)', ':-D', ':D', ':)', ':P', '(^:', 'B-)']
-frowns = [':^(', 'D-:', 'D:', ':(', ':-/', ')^:', 'B-(', ':\'(']
+smiles = [':^)', ':-D', ':)', ':P', '(^:', 'B-)']
 
 
 def run(data, settings):
-    if data['payload'] in smiles:
+    if ':^)' == data['payload']:
         return random.choice(smiles)
-    if data['payload'] in frowns:
-        return random.choice(frowns)

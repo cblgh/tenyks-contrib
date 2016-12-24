@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-version = '0.3.0'
+version = '0.2.1'
 
 setup(name='tenyks-contrib',
       version=version,
@@ -21,13 +21,14 @@ setup(name='tenyks-contrib',
       zip_safe=True,
       install_requires=[
           # -*- Extra requirements: -*-
-          'tenyksservice>=2',
+          'tenyks',  # This is until I port everything to tenyksservice
+          'tenyksservice>=1.5',
           'feedparser',
           'python-dateutil',
           'requests',
           'nose',
           'pytz',
-          'bs4'
+          'BeautifulSoup'
       ],
       entry_points={
           'console_scripts': [
@@ -36,17 +37,17 @@ setup(name='tenyks-contrib',
               'tenyksleetpoints = tenyksleetpoints.main:main',
               'tenyksmusic = tenyksmusic.main:main',
               'tenykssearch = tenykssearch.core:main',
+              'tenykshi = tenykshi.main:main',
               'tenykshahameter = tenykshahameter.main:main',
+              'tenyksfun = tenyksfun.main:main',
               'tenyksscripts = tenyksscripts.main:main',
               'tenykslinkscraper = tenykslinkscraper.main:main',
               'tenykslogger = tenykslogger.main:main',
-              'tenykstwitter = tenykstwitter.main:main',
               'tenykswunderground = tenykswunderground.main:main',
               'tenykswebpagemonitor = webpage_monitor.main:main',
               'tenyksweblistener = tenyksweblistener.main:main',
               'tenyksddate = tenyksddate.main:main',
-              'tenyksgentoo = tenyksgentoo.main:main',
-              'tenykslol = tenykslol.main:main',
+              'gentooservice = gentoo.main:main',
           ]
       },
       )

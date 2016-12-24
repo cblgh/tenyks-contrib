@@ -1,11 +1,12 @@
-from tenyksservice import TenyksService, run_service, FilterChain
+from tenyks.client import Client, run_client
 
 
-class TenyksSearch(TenyksService):
+class TenyksSearch(Client):
 
     irc_message_filters = {
-        'search': FilterChain(r'^search (.*)$', direct_only=True),
+        'search': r'^search (.*)$',
     }
+    direct_only = True
 
     def handle(self, data, match, filter_name):
         query = match.groups()[0]
@@ -15,7 +16,7 @@ class TenyksSearch(TenyksService):
 
 def main():
     search = TenyksSearch()
-    run_service(search)
+    run_client(search)
 
 
 if __name__ == '__main__':

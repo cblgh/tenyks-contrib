@@ -1,10 +1,11 @@
 from flask import Flask
-from tenyksservice import TenyksService, run_service
+from tenyks.client import Client, run_client
+from tenyks.client.config import settings
 
 from .routes import app as routes
 
 
-class TenyksWebListener(TenyksService):
+class TenyksWebListener(Client):
 
     def run(self):
         app = Flask(__name__)
@@ -13,7 +14,7 @@ class TenyksWebListener(TenyksService):
 
 
 def main():
-    run_service(TenyksWebListener)
+    run_client(TenyksWebListener)
 
 
 if __name__=='__main__':

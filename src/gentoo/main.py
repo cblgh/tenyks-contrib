@@ -1,24 +1,25 @@
-from os.path import join
+from os.path import abspath, join, dirname
+import sys
 import logging
 import re
 import time
 import datetime
 
-from tenyksservice import TenyksService, run_service, FilterChain
-from tenyksservice.config import settings
+from tenyks.client import Client, run_client
+from tenyks.client.config import settings
 
 logger = logging.getLogger('tenyks-contrib.gentooservice')
 
 
-class GentooService(TenyksService):
+class GentooService(Client):
 
     irc_message_filters = {
-        'get_last_mention': FilterChain([r'^last gentoo mention$']),
-        'find_gentoo': FilterChain([re.compile(r'\b(gentoo)\b',
-                                               flags=re.IGNORECASE).search]),
-        'funroll': FilterChain([re.compile(r'\b(funroll)\b',
-                                           flags=re.IGNORECASE).search]),
+        'get_last_mention': [r'^last gentoo mention$'],
+        'find_gentoo': [re.compile(r'\b(gentoo)\b', flags=re.IGNORECASE).search],
+        'funroll': [re.compile(r'\b(funroll)\b', flags=re.IGNORECASE).search],
     }
+
+    direct_only = False
 
     def __init__(self, *args, **kwargs):
         super(GentooService, self).__init__(*args, **kwargs)
@@ -39,9 +40,8 @@ class GentooService(TenyksService):
     def handle_funroll(self, data, match):
         self.send('What kinda fun y\'all having?', data)
 
-
 def main():
-    run_service(GentooService)
+    run_client(GentooService)
 
 
 if __name__ == '__main__':

@@ -1,18 +1,38 @@
+import logging
+import gevent
 import re
 import requests
 import json
-from bs4 import BeautifulSoup
-from html.parser import HTMLParser
-from tenyksservice import TenyksService, run_service, FilterChain
-from tenyksservice.config import settings
+from BeautifulSoup import BeautifulSoup
+from HTMLParser import HTMLParser
+from tenyks.client import Client, run_client
+from tenyks.client.config import settings
 
 
-class TenyksLinkScraper(TenyksService):
+class TenyksLinkScraper(Client):
 
+    direct_only = False
     irc_message_filters = {
-        #does not match punctuation at the end of a link. will not match if there is a closing bracket after the link[crude way of ignoring links in parens and a subset of long speils as titles]
-        'link_posted': FilterChain([re.compile(r'\b((http|https)://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|])[.,]?\s*([^)]*)$').search])
+        'link_posted': [r'\b((http|https)://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|])[.,]?\s*([^)]*)$'], #does not match punctuation at the end of a link. will not match if there is a closing bracket after the link[crude way of ignoring links in parens and a subset of long speils as titles]
     }
+
+    # MONKEYPATCHING IS DUMB
+    def __init__(self, name):
+            self.channels = [settings.BROADCAST_TO_CLIENTS_CHANNEL]
+            self.name = name.lower().replace(' ', '')
+            if self.irc_message_filters:
+                self.re_irc_message_filters = {}
+                for name, regexes in self.irc_message_filters.iteritems():
+                    if name not in self.re_irc_message_filters:
+                        self.re_irc_message_filters[name] = []
+                    if isinstance(regexes, basestring):
+                        regexes = [regexes]
+                    for regex in regexes:
+                        self.re_irc_message_filters[name].append(
+                            re.compile(regex).search)
+            if hasattr(self, 'recurring'):
+                gevent.spawn(self.run_recurring)
+            self.logger = logging.getLogger(self.name)
 
     def handle(*args, **kwargs):
         pass
@@ -53,7 +73,7 @@ class TenyksLinkScraper(TenyksService):
             self.send('Link Scraper Error: {}'.format(response.text), data)
 
         self.logger.debug('Posted {url} to {post_url}. Response was {text}. Response code was {code}'.format(
-            code=response.status_code,
+            code=unicode(response.status_code),
             url=url,
             text=response.text,
             post_url=post_url))
@@ -76,7 +96,7 @@ class TenyksLinkScraper(TenyksService):
 
 
 def main():
-    run_service(TenyksLinkScraper)
+    run_client(TenyksLinkScraper)
 
 if __name__ == '__main__':
     main()

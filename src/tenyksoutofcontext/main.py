@@ -1,9 +1,9 @@
 import random
 
-from tenyksservice import TenyksService, run_service
+from tenyks.client import Client, run_client
 
 
-class TenyksOutOfContext(TenyksService):
+class TenyksOutOfContext(Client):
 
     def __init__(self):
         super(TenyksOutOfContext, self).__init__()
@@ -33,10 +33,6 @@ class TenyksOutOfContext(TenyksService):
                 self.messages[data['connection_name']][data['irc_channel']] = 0
 
 
-def main():
-    out_of_context = TenyksOutOfContext()
-    run_service(out_of_context)
-
-
 if __name__ == '__main__':
-    main()
+    out_of_context = TenyksOutOfContext()
+    run_client(out_of_context)

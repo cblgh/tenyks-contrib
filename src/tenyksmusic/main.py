@@ -1,19 +1,20 @@
 import mpd
 
-from tenyksservice import TenyksService, run_service, FilterChain
+from tenyks.client import Client, run_client
 
 
-class TenyksMpdMusic(TenyksService):
+class TenyksMpdMusic(Client):
 
     irc_message_filters = {
-        'play': FilterChain(r'play music', direct_only=True),
-        'pause': FilterChain(r'pause music', direct_only=True),
-        'next': FilterChain(r'next song', direct_only=True),
-        'random_toggle': FilterChain(r'toggle random', direct_only=True),
-        'currentsong': FilterChain(r'current song', direct_only=True),
-        'stats': FilterChain(r'music stats', direct_only=True),
-        'vote': FilterChain(r'(down|up)+(vote|boat)+ song', direct_only=True),
+        'play': r'play music',
+        'pause': r'pause music',
+        'next': r'next song',
+        'random_toggle': r'toggle random',
+        'currentsong': r'current song',
+        'stats': r'music stats',
+        'vote': r'(down|up)+(vote|boat)+ song',
     }
+    direct_only = True
 
     def __init__(self):
         super(TenyksMpdMusic, self).__init__()
@@ -99,7 +100,7 @@ class TenyksMpdMusic(TenyksService):
 
 def main():
     mpd_music = TenyksMpdMusic()
-    run_service(mpd_music)
+    run_client(mpd_music)
 
 
 if __name__ == '__main__':
